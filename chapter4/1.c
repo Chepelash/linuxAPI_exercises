@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include "../helpers/helper.h"
 /*
 * Команда tee считывает свой стандартный ввод, пока ей не встретится символ конца
 файла, записывает копию своего ввода на стандартное устройство вывода и в файл,
@@ -43,25 +44,20 @@ int main(int argc, char *argv[]) {
         fname = argv[1];
     }
     // open fd
-    if((fd = open(fname, openFlag, fmode)) == -1) {
-        perror("Error during openning fd");
-        exit(EXIT_FAILURE);
-    }
+    if((fd = open(fname, openFlag, fmode)) == -1) 
+        PERR_EXIT("Error during openning fd");
+    
     // read
-    if((bytesWritten = read(STDIN_FILENO, buf, MAX_BUF)) == -1 && errno != 0){
-        perror("Error during read");
-        exit(EXIT_FAILURE);
-    }
+    if((bytesWritten = read(STDIN_FILENO, buf, MAX_BUF)) == -1 && errno != 0)
+        PERR_EXIT("Error during read");
+    
     // write
-    if(write(fd, buf, bytesWritten) != bytesWritten) {
-        perror("Cannot write whole buffer");
-        exit(EXIT_FAILURE);
-    }
+    if(write(fd, buf, bytesWritten) != bytesWritten) 
+        PERR_EXIT("Cannot write whole buffer");        
+    
     // close fd
-    if(close(fd) == -1) {
-        perror("Error during closing fd");
-        exit(EXIT_FAILURE);
-    }
+    if(close(fd) == -1) 
+        PERR_EXIT("Error during closing fd");        
 
     printf("It's fine\n");
     exit(EXIT_SUCCESS);
